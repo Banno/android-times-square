@@ -56,7 +56,7 @@ public class CalendarPickerViewTest {
 
   private Activity activity;
   private Locale locale;
-  private CalendarPickerView view;
+  private CalendarPickerView<MonthCellDescriptor> view;
   private Calendar today;
   private Date maxDate;
   private Date minDate;
@@ -65,7 +65,7 @@ public class CalendarPickerViewTest {
   public void setUp() throws Exception {
     activity = Robolectric.buildActivity(Activity.class).create().start().resume().get();
     locale = Locale.US;
-    view = new CalendarPickerView(activity, null);
+    view = new CalendarPickerView<MonthCellDescriptor>(activity, null);
     today = Calendar.getInstance(locale);
     today.set(2012, NOVEMBER, 16, 0, 0);
     minDate = today.getTime();
@@ -347,7 +347,7 @@ public class CalendarPickerViewTest {
 
   @Test
   public void testNotCallingInit() throws Exception {
-    view = new CalendarPickerView(activity, null);
+    view = new CalendarPickerView<MonthCellDescriptor>(activity, null);
     try {
       view.onMeasure(0, 0);
       fail("Should have thrown an IllegalStateException!");
