@@ -487,7 +487,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
     return wasSelected;
   }
 
-  private void validateDate(Date date) {
+  protected void validateDate(Date date) {
     if (date == null) {
       throw new IllegalArgumentException("Selected date must be non-null.");
     }
