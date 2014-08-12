@@ -9,6 +9,10 @@
     <attr name="headerTextColor" format="color"/>
   </declare-styleable>
 
+  <declare-styleable name="CalendarGridView">
+      <attr name="showingDayHeaders" format="boolean"/>
+  </declare-styleable>
+
   <declare-styleable name="calendar_cell">
     <attr name="state_selectable" format="boolean" />
     <attr name="state_current_month" format="boolean" />

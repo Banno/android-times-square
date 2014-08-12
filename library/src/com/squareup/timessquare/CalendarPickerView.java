@@ -56,7 +56,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
   }
 
   protected final MonthAdapter adapter;
-  private final List<List<List<T>>> cells =
+  protected final List<List<List<T>>> cells =
       new ArrayList<List<List<T>>>();
   final MonthView.Listener listener = new CellClickedListener();
   final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
@@ -64,7 +64,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
   final List<MonthCellDescriptor> highlightedCells = new ArrayList<MonthCellDescriptor>();
   final List<Calendar> selectedCals = new ArrayList<Calendar>();
   final List<Calendar> highlightedCals = new ArrayList<Calendar>();
-  private Locale locale;
+  protected Locale locale;
   private DateFormat monthNameFormat;
   private DateFormat fullDateFormat;
   private Calendar minCal;
@@ -734,7 +734,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
     return selectedCals.get(selectedCals.size() - 1);
   }
 
-  private static boolean sameDate(Calendar cal, Calendar selectedDate) {
+  protected static boolean sameDate(Calendar cal, Calendar selectedDate) {
     return cal.get(MONTH) == selectedDate.get(MONTH)
         && cal.get(YEAR) == selectedDate.get(YEAR)
         && cal.get(DAY_OF_MONTH) == selectedDate.get(DAY_OF_MONTH);

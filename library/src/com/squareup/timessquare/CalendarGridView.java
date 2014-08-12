@@ -3,6 +3,7 @@ package com.squareup.timessquare;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -25,12 +26,17 @@ public class CalendarGridView extends ViewGroup {
   private static final float FLOAT_FUDGE = 0.5f;
 
   private final Paint dividerPaint = new Paint();
+  private boolean showingDayHeaders;
   private int oldWidthMeasureSize;
   private int oldNumRows;
 
   public CalendarGridView(Context context, AttributeSet attrs) {
     super(context, attrs);
     dividerPaint.setColor(getResources().getColor(R.color.calendar_divider));
+
+    TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CalendarGridView);
+    showingDayHeaders = a.getBoolean(R.styleable.CalendarGridView_showingDayHeaders, true);
+    a.recycle();
   }
 
   public void setDividerColor(int color) {
@@ -44,18 +50,21 @@ public class CalendarGridView extends ViewGroup {
   }
 
   public void setDayTextColor(int resId) {
-    for (int i = 0; i < getChildCount(); i++) {
+    for (int i = 1; i < getChildCount(); i++) {
       ColorStateList colors = getResources().getColorStateList(resId);
       ((CalendarRowView) getChildAt(i)).setCellTextColor(colors);
     }
   }
 
   public void setHeaderTextColor(int color) {
+    if (!showingDayHeaders) {
+        throw new IllegalStateException("Cannot set header text color when not showing headers");
+    }
     ((CalendarRowView) getChildAt(0)).setCellTextColor(color);
   }
 
   @Override public void addView(View child, int index, ViewGroup.LayoutParams params) {
-    if (getChildCount() == 0) {
+    if (showingDayHeaders && getChildCount() == 0) {
       ((CalendarRowView) child).setIsHeaderRow(true);
     }
     super.addView(child, index, params);
