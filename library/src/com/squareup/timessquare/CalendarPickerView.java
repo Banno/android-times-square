@@ -308,7 +308,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
     }
   }
 
-  private void validateAndUpdate() {
+  protected void validateAndUpdate() {
     if (getAdapter() == null) {
       setAdapter(adapter);
     }
@@ -321,16 +321,16 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
 
   private void scrollToSelectedMonth(final int selectedIndex, final boolean smoothScroll) {
     post(new Runnable() {
-      @Override
-      public void run() {
-        Logr.d("Scrolling to position %d", selectedIndex);
+        @Override
+        public void run() {
+            Logr.d("Scrolling to position %d", selectedIndex);
 
-        if (smoothScroll) {
-          smoothScrollToPosition(selectedIndex);
-        } else {
-          setSelection(selectedIndex);
+            if (smoothScroll) {
+                smoothScrollToPosition(selectedIndex);
+            } else {
+                setSelection(selectedIndex);
+            }
         }
-      }
     });
   }
 
@@ -571,7 +571,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
     return date != null;
   }
 
-  private void clearOldSelections() {
+  public void clearOldSelections() {
     for (MonthCellDescriptor selectedCell : selectedCells) {
       // De-select the currently-selected cell.
       selectedCell.setSelected(false);
