@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import static java.util.Calendar.DATE;
 import static java.util.Calendar.DAY_OF_MONTH;
@@ -65,6 +66,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
   final List<Calendar> selectedCals = new ArrayList<Calendar>();
   final List<Calendar> highlightedCals = new ArrayList<Calendar>();
   protected Locale locale;
+  protected TimeZone timeZone;
   private DateFormat monthNameFormat;
   private DateFormat fullDateFormat;
   private Calendar minCal;
@@ -109,10 +111,12 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
     setBackgroundColor(bg);
     setCacheColorHint(bg);
     locale = Locale.getDefault();
-    today = Calendar.getInstance(locale);
-    minCal = Calendar.getInstance(locale);
-    maxCal = Calendar.getInstance(locale);
-    monthCounter = Calendar.getInstance(locale);
+    timeZone = TimeZone.getDefault();
+
+    today = newCalendar();
+    minCal = newCalendar();
+    maxCal = newCalendar();
+    monthCounter = newCalendar();
     monthNameFormat = new SimpleDateFormat(context.getString(R.string.month_name_format), locale);
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
 
@@ -122,13 +126,17 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
             locale));
 
       if (isInEditMode()) {
-      Calendar nextYear = Calendar.getInstance(locale);
+      Calendar nextYear = newCalendar();
       nextYear.add(Calendar.YEAR, 1);
 
       init(new Date(), nextYear.getTime()) //
           .withSelectedDate(new Date());
     }
 
+  }
+
+  protected Calendar newCalendar() {
+      return Calendar.getInstance(timeZone, locale);
   }
 
   protected MonthAdapter constructMonthAdapter(Context context, List<MonthDescriptor> months,
@@ -154,7 +162,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
-  public FluentInitializer init(Date minDate, Date maxDate, Locale locale) {
+  public FluentInitializer init(Date minDate, Date maxDate, Locale locale, TimeZone timeZone) {
     if (minDate == null || maxDate == null) {
       throw new IllegalArgumentException(
           "minDate and maxDate must be non-null.  " + dbg(minDate, maxDate));
@@ -171,12 +179,17 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
       throw new IllegalArgumentException("Locale is null.");
     }
 
+    if (timeZone == null) {
+      throw new IllegalArgumentException("Time zone is null");
+    }
     // Make sure that all calendar instances use the same locale.
     this.locale = locale;
-    today = Calendar.getInstance(locale);
-    minCal = Calendar.getInstance(locale);
-    maxCal = Calendar.getInstance(locale);
-    monthCounter = Calendar.getInstance(locale);
+    this.timeZone = timeZone;
+
+    today = newCalendar();
+    minCal = newCalendar();
+    maxCal = newCalendar();
+    monthCounter = newCalendar();
     monthNameFormat =
         new SimpleDateFormat(getContext().getString(R.string.month_name_format), locale);
     for (MonthDescriptor month : months) {
@@ -241,13 +254,19 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
    * <p>
    * The calendar will be constructed using the default locale as returned by
    * {@link java.util.Locale#getDefault()}. If you wish the calendar to be constructed using a
-   * different locale, use {@link #init(java.util.Date, java.util.Date, java.util.Locale)}.
+   * different locale, use {@link #init(java.util.Date, java.util.Date,
+   * java.util.Locale, java.util.TimeZone)}.
    *
    * @param minDate Earliest selectable date, inclusive.  Must be earlier than {@code maxDate}.
    * @param maxDate Latest selectable date, exclusive.  Must be later than {@code minDate}.
    */
+
+  public FluentInitializer init(Date minDate, Date maxDate, TimeZone timeZone) {
+        return init(minDate, maxDate, Locale.getDefault(), timeZone);
+  }
+
   public FluentInitializer init(Date minDate, Date maxDate) {
-    return init(minDate, maxDate, Locale.getDefault());
+    return init(minDate, maxDate, Locale.getDefault(), TimeZone.getDefault());
   }
 
   public class FluentInitializer {
@@ -337,7 +356,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
   private void scrollToSelectedDates() {
     Integer selectedIndex = null;
     Integer todayIndex = null;
-    Calendar today = Calendar.getInstance(locale);
+    Calendar today = newCalendar();
     for (int c = 0; c < months.size(); c++) {
       MonthDescriptor month = months.get(c);
       if (selectedIndex == null) {
@@ -503,7 +522,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
   }
 
   private boolean doSelectDate(Date date, MonthCellDescriptor cell) {
-    Calendar newlySelectedCal = Calendar.getInstance(locale);
+    Calendar newlySelectedCal = newCalendar();
     newlySelectedCal.setTime(date);
     // Sanitize input: clear out the hours/minutes/seconds/millis.
     setMidnight(newlySelectedCal);
@@ -605,7 +624,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
 
       MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
       if (monthCellWithMonthIndex != null) {
-        Calendar newlyHighlightedCal = Calendar.getInstance();
+        Calendar newlyHighlightedCal = newCalendar();
         newlyHighlightedCal.setTime(date);
         MonthCellDescriptor cell = monthCellWithMonthIndex.cell;
 
@@ -633,9 +652,9 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
   /** Return cell and month-index (for scrolling) for a given Date. */
   protected MonthCellWithMonthIndex getMonthCellWithIndexByDate(Date date) {
     int index = 0;
-    Calendar searchCal = Calendar.getInstance(locale);
+    Calendar searchCal = newCalendar();
     searchCal.setTime(date);
-    Calendar actCal = Calendar.getInstance(locale);
+    Calendar actCal = newCalendar();
 
     for (List<List<T>> monthCells : cells) {
       for (List<T> weekCells : monthCells) {
@@ -652,7 +671,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
   }
 
   List<List<T>> getMonthCells(MonthDescriptor month, Calendar startCal) {
-    Calendar cal = Calendar.getInstance(locale);
+    Calendar cal = newCalendar();
     cal.setTime(startCal.getTime());
     List<List<T>> cells = new ArrayList<List<T>>();
     cal.set(DAY_OF_MONTH, 1);
@@ -825,4 +844,5 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
       Toast.makeText(getContext(), errMessage, Toast.LENGTH_SHORT).show();
     }
   }
+
 }
