@@ -3,7 +3,9 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 
@@ -44,6 +46,7 @@ public class CalendarCellView extends TextView {
   public void setSelectable(boolean isSelectable) {
     this.isSelectable = isSelectable;
     refreshDrawableState();
+    refreshAccessibilityState();
   }
 
   public void setCurrentMonth(boolean isCurrentMonth) {
@@ -64,6 +67,17 @@ public class CalendarCellView extends TextView {
   public void setHighlighted(boolean highlighted) {
     isHighlighted = highlighted;
     refreshDrawableState();
+  }
+
+  private void refreshAccessibilityState() {
+      setFocusableInTouchMode(isSelectable);
+      setFocusable(isSelectable);
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+          setImportantForAccessibility(isSelectable
+                  ? View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                  : View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+      }
   }
 
   public boolean isSelectable() {
