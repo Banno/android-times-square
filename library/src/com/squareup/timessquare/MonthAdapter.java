@@ -78,6 +78,9 @@ public class MonthAdapter<T extends MonthCellDescriptor> extends BaseAdapter {
 
         monthView.init(months.get(position), cells.get(position), displayOnly);
 
+        monthView.setFocusable(false);
+        monthView.setFocusableInTouchMode(false);
+
         return monthView;
     }
 

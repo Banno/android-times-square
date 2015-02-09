@@ -455,7 +455,7 @@ public class CalendarPickerViewTest {
     jumpToCal.setTime(today.getTime());
     jumpToCal.add(DATE, 1);
     MonthCellDescriptor cellToClick =
-        new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, 0,
+        new MonthCellDescriptor(jumpToCal.getTime(), timeZone, true, true, true, true, true, 0,
             MonthCellDescriptor.RangeState.NONE);
     view.listener.handleClick(cellToClick);
 

@@ -37,6 +37,9 @@ public class CalendarGridView extends ViewGroup {
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CalendarGridView);
     showingDayHeaders = a.getBoolean(R.styleable.CalendarGridView_showingDayHeaders, true);
     a.recycle();
+
+    setFocusable(false);
+    setFocusableInTouchMode(false);
   }
 
   public void setDividerColor(int color) {

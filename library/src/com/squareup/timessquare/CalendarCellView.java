@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.TextView;
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class CalendarCellView extends TextView {
   private static final int[] STATE_SELECTABLE = {
       R.attr.state_selectable
@@ -37,13 +41,31 @@ public class CalendarCellView extends TextView {
   private boolean isToday = false;
   private boolean isHighlighted = false;
   private RangeState rangeState = RangeState.NONE;
+  private Date date = null;
+  private SimpleDateFormat descriptionFormat;
 
   @SuppressWarnings("UnusedDeclaration")
   public CalendarCellView(Context context, AttributeSet attrs) {
     super(context, attrs);
+
+    descriptionFormat = new SimpleDateFormat("MMM d");
   }
 
-  public void setSelectable(boolean isSelectable) {
+  public void setDate(Date date, TimeZone timeZone) {
+      this.date = date;
+      descriptionFormat.setTimeZone(timeZone);
+  }
+
+    @Override
+    public CharSequence getContentDescription() {
+        if (date != null) {
+            return descriptionFormat.format(date);
+        }
+
+        return super.getContentDescription();
+    }
+
+    public void setSelectable(boolean isSelectable) {
     this.isSelectable = isSelectable;
     refreshDrawableState();
     refreshAccessibilityState();
@@ -117,4 +139,5 @@ public class CalendarCellView extends TextView {
 
     return drawableState;
   }
+
 }

@@ -3,6 +3,7 @@
 package com.squareup.timessquare;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 /** Describes the state of a particular date cell in a {@link MonthView}. */
 public class MonthCellDescriptor {
@@ -11,6 +12,7 @@ public class MonthCellDescriptor {
   }
 
   private final Date date;
+  private final TimeZone timeZone;
   private final int value;
   private final boolean isCurrentMonth;
   private boolean isSelected;
@@ -19,9 +21,10 @@ public class MonthCellDescriptor {
   private boolean isHighlighted;
   private RangeState rangeState;
 
-  public MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
-      boolean today, boolean highlighted, int value, RangeState rangeState) {
+  public MonthCellDescriptor(Date date, TimeZone timeZone, boolean currentMonth, boolean selectable,
+        boolean selected, boolean today, boolean highlighted, int value, RangeState rangeState) {
     this.date = date;
+    this.timeZone = timeZone;
     isCurrentMonth = currentMonth;
     isSelectable = selectable;
     isHighlighted = highlighted;
@@ -33,6 +36,10 @@ public class MonthCellDescriptor {
 
   public Date getDate() {
     return date;
+  }
+
+  public TimeZone getTimeZone() {
+      return timeZone;
   }
 
   public boolean isCurrentMonth() {

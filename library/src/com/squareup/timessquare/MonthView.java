@@ -79,6 +79,9 @@ public class MonthView<VIEW extends CalendarCellView,
         weekRow.setVisibility(GONE);
       }
     }
+
+    setFocusable(false);
+    setFocusableInTouchMode(false);
     Logr.d("MonthView.init took %d ms", System.currentTimeMillis() - start);
   }
 
@@ -94,6 +97,7 @@ public class MonthView<VIEW extends CalendarCellView,
       cellView.setRangeState(cellDescriptor.getRangeState());
       cellView.setHighlighted(cellDescriptor.isHighlighted());
       cellView.setTag(cellDescriptor);
+      cellView.setDate(cellDescriptor.getDate(), cellDescriptor.getTimeZone());
   }
 
   public void setListener(Listener listener) {
