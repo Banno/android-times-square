@@ -724,7 +724,7 @@ public class CalendarPickerView<T extends MonthCellDescriptor> extends ListView 
   protected T constructMonthCellDescriptor(Calendar calendar, Date date, boolean currentMonth,
          boolean selectable, boolean selected, boolean today, boolean highlighted, int value,
          RangeState rangeState) {
-      return (T) new MonthCellDescriptor(date, currentMonth, selectable, selected,
+      return (T) new MonthCellDescriptor(date, timeZone, currentMonth, selectable, selected,
               today, highlighted, value, rangeState);
   }
 

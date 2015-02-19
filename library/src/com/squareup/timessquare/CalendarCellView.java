@@ -3,9 +3,15 @@
 package com.squareup.timessquare;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 import com.squareup.timessquare.MonthCellDescriptor.RangeState;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class CalendarCellView extends TextView {
   private static final int[] STATE_SELECTABLE = {
@@ -35,15 +41,34 @@ public class CalendarCellView extends TextView {
   private boolean isToday = false;
   private boolean isHighlighted = false;
   private RangeState rangeState = RangeState.NONE;
+  private Date date = null;
+  private SimpleDateFormat descriptionFormat;
 
   @SuppressWarnings("UnusedDeclaration")
   public CalendarCellView(Context context, AttributeSet attrs) {
     super(context, attrs);
+
+    descriptionFormat = new SimpleDateFormat("MMM d");
   }
 
-  public void setSelectable(boolean isSelectable) {
+  public void setDate(Date date, TimeZone timeZone) {
+      this.date = date;
+      descriptionFormat.setTimeZone(timeZone);
+  }
+
+    @Override
+    public CharSequence getContentDescription() {
+        if (date != null) {
+            return descriptionFormat.format(date);
+        }
+
+        return super.getContentDescription();
+    }
+
+    public void setSelectable(boolean isSelectable) {
     this.isSelectable = isSelectable;
     refreshDrawableState();
+    refreshAccessibilityState();
   }
 
   public void setCurrentMonth(boolean isCurrentMonth) {
@@ -64,6 +89,17 @@ public class CalendarCellView extends TextView {
   public void setHighlighted(boolean highlighted) {
     isHighlighted = highlighted;
     refreshDrawableState();
+  }
+
+  private void refreshAccessibilityState() {
+      setFocusableInTouchMode(isSelectable);
+      setFocusable(isSelectable);
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+          setImportantForAccessibility(isSelectable
+                  ? View.IMPORTANT_FOR_ACCESSIBILITY_YES
+                  : View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+      }
   }
 
   public boolean isSelectable() {
@@ -103,4 +139,5 @@ public class CalendarCellView extends TextView {
 
     return drawableState;
   }
+
 }
