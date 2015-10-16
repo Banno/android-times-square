@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'checkstyle'
+apply plugin: 'maven'
 
 task checkstyle(type: Checkstyle) {
   configFile rootProject.file('checkstyle.xml')
@@ -32,6 +33,9 @@ android {
   }
 }
 
+group = 'com.squareup.timessquare'
+version = '1.6.5'
+
 dependencies {
   testCompile deps.festandroid
   testCompile deps.junit
@@ -39,4 +43,10 @@ dependencies {
   testCompile deps.intellijannotations
 }
 
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      repository(url: "file:~/.m2")
+    }
+  }
+}
