@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.squareup.timessquare.MonthCellDescriptor.RangeState;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -63,12 +62,12 @@ public class CalendarPickerView extends ListView {
   }
 
   private final CalendarPickerView.MonthAdapter adapter;
-  private final List<List<List<com.squareup.timessquare.MonthCellDescriptor>>> cells =
-      new ArrayList<List<List<com.squareup.timessquare.MonthCellDescriptor>>>();
-  final com.squareup.timessquare.MonthView.Listener listener = new CellClickedListener();
-  final List<com.squareup.timessquare.MonthDescriptor> months = new ArrayList<com.squareup.timessquare.MonthDescriptor>();
-  final List<com.squareup.timessquare.MonthCellDescriptor> selectedCells = new ArrayList<com.squareup.timessquare.MonthCellDescriptor>();
-  final List<com.squareup.timessquare.MonthCellDescriptor> highlightedCells = new ArrayList<com.squareup.timessquare.MonthCellDescriptor>();
+  private final List<List<List<MonthCellDescriptor>>> cells =
+      new ArrayList<List<List<MonthCellDescriptor>>>();
+  final MonthView.Listener listener = new CellClickedListener();
+  final List<MonthDescriptor> months = new ArrayList<MonthDescriptor>();
+  final List<MonthCellDescriptor> selectedCells = new ArrayList<MonthCellDescriptor>();
+  final List<MonthCellDescriptor> highlightedCells = new ArrayList<MonthCellDescriptor>();
   final List<Calendar> selectedCals = new ArrayList<Calendar>();
   final List<Calendar> highlightedCals = new ArrayList<Calendar>();
   private TimeZone timeZone;
@@ -96,16 +95,16 @@ public class CalendarPickerView extends ListView {
   private OnInvalidDateSelectedListener invalidDateListener =
       new DefaultOnInvalidDateSelectedListener();
   private CellClickInterceptor cellClickInterceptor;
-  private List<com.squareup.timessquare.CalendarCellDecorator> decorators;
+  private List<CalendarCellDecorator> decorators;
 
-  public void setDecorators(List<com.squareup.timessquare.CalendarCellDecorator> decorators) {
+  public void setDecorators(List<CalendarCellDecorator> decorators) {
     this.decorators = decorators;
     if (null != adapter) {
       adapter.notifyDataSetChanged();
     }
   }
 
-  public List<com.squareup.timessquare.CalendarCellDecorator> getDecorators() {
+  public List<CalendarCellDecorator> getDecorators() {
     return decorators;
   }
 
@@ -193,7 +192,7 @@ public class CalendarPickerView extends ListView {
     monthCounter = createCalendar();
     monthNameFormat =
         new SimpleDateFormat(getContext().getString(R.string.month_name_format), locale);
-    for (com.squareup.timessquare.MonthDescriptor month : months) {
+    for (MonthDescriptor month : months) {
       month.setLabel(monthNameFormat.format(month.getDate()));
     }
     weekdayNameFormat =
@@ -228,8 +227,8 @@ public class CalendarPickerView extends ListView {
         || monthCounter.get(YEAR) < maxYear) // Up to the year.
         && monthCounter.get(YEAR) < maxYear + 1) { // But not > next yr.
       Date date = monthCounter.getTime();
-      com.squareup.timessquare.MonthDescriptor month =
-          new com.squareup.timessquare.MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR), date,
+      MonthDescriptor month =
+          new MonthDescriptor(monthCounter.get(MONTH), monthCounter.get(YEAR), date,
               monthNameFormat.format(date));
       cells.add(getMonthCells(month, monthCounter));
       Logr.d("Adding month %s", month);
@@ -363,7 +362,7 @@ public class CalendarPickerView extends ListView {
     Integer todayIndex = null;
     Calendar today = createCalendar();
     for (int c = 0; c < months.size(); c++) {
-      com.squareup.timessquare.MonthDescriptor month = months.get(c);
+      MonthDescriptor month = months.get(c);
       if (selectedIndex == null) {
         for (Calendar selectedCal : selectedCals) {
           if (sameMonth(selectedCal, month)) {
@@ -389,7 +388,7 @@ public class CalendarPickerView extends ListView {
     Calendar cal = createCalendar();
     cal.setTime(date);
     for (int c = 0; c < months.size(); c++) {
-      com.squareup.timessquare.MonthDescriptor month = months.get(c);
+      MonthDescriptor month = months.get(c);
       if (sameMonth(cal, month)) {
         selectedIndex = c;
         break;
@@ -472,7 +471,7 @@ public class CalendarPickerView extends ListView {
 
   public List<Date> getSelectedDates() {
     List<Date> selectedDates = new ArrayList<Date>();
-    for (com.squareup.timessquare.MonthCellDescriptor cal : selectedCells) {
+    for (MonthCellDescriptor cal : selectedCells) {
       selectedDates.add(cal.getDate());
     }
     Collections.sort(selectedDates);
@@ -492,8 +491,8 @@ public class CalendarPickerView extends ListView {
     cal.set(MILLISECOND, 0);
   }
 
-  private class CellClickedListener implements com.squareup.timessquare.MonthView.Listener {
-    @Override public void handleClick(com.squareup.timessquare.MonthCellDescriptor cell) {
+  private class CellClickedListener implements MonthView.Listener {
+    @Override public void handleClick(MonthCellDescriptor cell) {
       Date clickedDate = cell.getDate();
 
       if (cellClickInterceptor != null && cellClickInterceptor.onCellClicked(clickedDate)) {
@@ -569,15 +568,15 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  private boolean doSelectDate(Date date, com.squareup.timessquare.MonthCellDescriptor cell) {
+  private boolean doSelectDate(Date date, MonthCellDescriptor cell) {
     Calendar newlySelectedCal = createCalendar();
     newlySelectedCal.setTime(date);
     // Sanitize input: clear out the hours/minutes/seconds/millis.
     setMidnight(newlySelectedCal);
 
     // Clear any remaining range state.
-    for (com.squareup.timessquare.MonthCellDescriptor selectedCell : selectedCells) {
-      selectedCell.setRangeState(RangeState.NONE);
+    for (MonthCellDescriptor selectedCell : selectedCells) {
+      selectedCell.setRangeState(MonthCellDescriptor.RangeState.NONE);
     }
 
     switch (selectionMode) {
@@ -614,17 +613,17 @@ public class CalendarPickerView extends ListView {
         // Select all days in between start and end.
         Date start = selectedCells.get(0).getDate();
         Date end = selectedCells.get(1).getDate();
-        selectedCells.get(0).setRangeState(com.squareup.timessquare.MonthCellDescriptor.RangeState.FIRST);
-        selectedCells.get(1).setRangeState(com.squareup.timessquare.MonthCellDescriptor.RangeState.LAST);
+        selectedCells.get(0).setRangeState(MonthCellDescriptor.RangeState.FIRST);
+        selectedCells.get(1).setRangeState(MonthCellDescriptor.RangeState.LAST);
 
-        for (List<List<com.squareup.timessquare.MonthCellDescriptor>> month : cells) {
-          for (List<com.squareup.timessquare.MonthCellDescriptor> week : month) {
-            for (com.squareup.timessquare.MonthCellDescriptor singleCell : week) {
+        for (List<List<MonthCellDescriptor>> month : cells) {
+          for (List<MonthCellDescriptor> week : month) {
+            for (MonthCellDescriptor singleCell : week) {
               if (singleCell.getDate().after(start)
                   && singleCell.getDate().before(end)
                   && singleCell.isSelectable()) {
                 singleCell.setSelected(true);
-                singleCell.setRangeState(com.squareup.timessquare.MonthCellDescriptor.RangeState.MIDDLE);
+                singleCell.setRangeState(MonthCellDescriptor.RangeState.MIDDLE);
                 selectedCells.add(singleCell);
               }
             }
@@ -639,7 +638,7 @@ public class CalendarPickerView extends ListView {
   }
 
   public void clearOldSelections() {
-    for (com.squareup.timessquare.MonthCellDescriptor selectedCell : selectedCells) {
+    for (MonthCellDescriptor selectedCell : selectedCells) {
       // De-select the currently-selected cell.
       selectedCell.setSelected(false);
 
@@ -661,7 +660,7 @@ public class CalendarPickerView extends ListView {
   }
 
   private Date applyMultiSelect(Date date, Calendar selectedCal) {
-    for (com.squareup.timessquare.MonthCellDescriptor selectedCell : selectedCells) {
+    for (MonthCellDescriptor selectedCell : selectedCells) {
       if (selectedCell.getDate().equals(date)) {
         // De-select the currently-selected cell.
         selectedCell.setSelected(false);
@@ -687,7 +686,7 @@ public class CalendarPickerView extends ListView {
       if (monthCellWithMonthIndex != null) {
         Calendar newlyHighlightedCal = createCalendar();
         newlyHighlightedCal.setTime(date);
-        com.squareup.timessquare.MonthCellDescriptor cell = monthCellWithMonthIndex.cell;
+        MonthCellDescriptor cell = monthCellWithMonthIndex.cell;
 
         highlightedCells.add(cell);
         highlightedCals.add(newlyHighlightedCal);
@@ -699,7 +698,7 @@ public class CalendarPickerView extends ListView {
   }
 
   public void clearHighlightedDates() {
-    for (com.squareup.timessquare.MonthCellDescriptor cal : highlightedCells) {
+    for (MonthCellDescriptor cal : highlightedCells) {
       cal.setHighlighted(false);
     }
     highlightedCells.clear();
@@ -710,10 +709,10 @@ public class CalendarPickerView extends ListView {
 
   /** Hold a cell with a month-index. */
   private static class MonthCellWithMonthIndex {
-    public com.squareup.timessquare.MonthCellDescriptor cell;
+    public MonthCellDescriptor cell;
     public int monthIndex;
 
-    public MonthCellWithMonthIndex(com.squareup.timessquare.MonthCellDescriptor cell, int monthIndex) {
+    public MonthCellWithMonthIndex(MonthCellDescriptor cell, int monthIndex) {
       this.cell = cell;
       this.monthIndex = monthIndex;
     }
@@ -726,9 +725,9 @@ public class CalendarPickerView extends ListView {
     searchCal.setTime(date);
     Calendar actCal = createCalendar();
 
-    for (List<List<com.squareup.timessquare.MonthCellDescriptor>> monthCells : cells) {
-      for (List<com.squareup.timessquare.MonthCellDescriptor> weekCells : monthCells) {
-        for (com.squareup.timessquare.MonthCellDescriptor actCell : weekCells) {
+    for (List<List<MonthCellDescriptor>> monthCells : cells) {
+      for (List<MonthCellDescriptor> weekCells : monthCells) {
+        for (MonthCellDescriptor actCell : weekCells) {
           actCal.setTime(actCell.getDate());
           if (sameDate(actCal, searchCal) && actCell.isSelectable()) {
             return new MonthCellWithMonthIndex(actCell, index);
@@ -765,10 +764,10 @@ public class CalendarPickerView extends ListView {
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent) {
-      com.squareup.timessquare.MonthView monthView = (com.squareup.timessquare.MonthView) convertView;
+      MonthView monthView = (MonthView) convertView;
       if (monthView == null) {
         monthView =
-            com.squareup.timessquare.MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
+            MonthView.create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
                     dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader,
                     headerTextColor, decorators, locale);
       } else {
@@ -780,10 +779,10 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  List<List<com.squareup.timessquare.MonthCellDescriptor>> getMonthCells(com.squareup.timessquare.MonthDescriptor month, Calendar startCal) {
+  List<List<MonthCellDescriptor>> getMonthCells(MonthDescriptor month, Calendar startCal) {
     Calendar cal = createCalendar();
     cal.setTime(startCal.getTime());
-    List<List<com.squareup.timessquare.MonthCellDescriptor>> cells = new ArrayList<List<com.squareup.timessquare.MonthCellDescriptor>>();
+    List<List<MonthCellDescriptor>> cells = new ArrayList<List<MonthCellDescriptor>>();
     cal.set(DAY_OF_MONTH, 1);
     int firstDayOfWeek = cal.get(DAY_OF_WEEK);
     int offset = cal.getFirstDayOfWeek() - firstDayOfWeek;
@@ -798,7 +797,7 @@ public class CalendarPickerView extends ListView {
     while ((cal.get(MONTH) < month.getMonth() + 1 || cal.get(YEAR) < month.getYear()) //
         && cal.get(YEAR) <= month.getYear()) {
       Logr.d("Building week row starting at %s", cal.getTime());
-      List<com.squareup.timessquare.MonthCellDescriptor> weekCells = new ArrayList<com.squareup.timessquare.MonthCellDescriptor>();
+      List<MonthCellDescriptor> weekCells = new ArrayList<MonthCellDescriptor>();
       cells.add(weekCells);
       for (int c = 0; c < 7; c++) {
         Date date = cal.getTime();
@@ -810,19 +809,19 @@ public class CalendarPickerView extends ListView {
         boolean isHighlighted = containsDate(highlightedCals, cal);
         int value = cal.get(DAY_OF_MONTH);
 
-        com.squareup.timessquare.MonthCellDescriptor.RangeState rangeState = com.squareup.timessquare.MonthCellDescriptor.RangeState.NONE;
+        MonthCellDescriptor.RangeState rangeState = MonthCellDescriptor.RangeState.NONE;
         if (selectedCals.size() > 1) {
           if (sameDate(minSelectedCal, cal)) {
-            rangeState = com.squareup.timessquare.MonthCellDescriptor.RangeState.FIRST;
+            rangeState = MonthCellDescriptor.RangeState.FIRST;
           } else if (sameDate(maxDate(selectedCals), cal)) {
-            rangeState = com.squareup.timessquare.MonthCellDescriptor.RangeState.LAST;
+            rangeState = MonthCellDescriptor.RangeState.LAST;
           } else if (betweenDates(cal, minSelectedCal, maxSelectedCal)) {
-            rangeState = com.squareup.timessquare.MonthCellDescriptor.RangeState.MIDDLE;
+            rangeState = MonthCellDescriptor.RangeState.MIDDLE;
           }
         }
 
         weekCells.add(
-            new com.squareup.timessquare.MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday,
+            new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday,
                 isHighlighted, value, rangeState));
         cal.add(DATE, 1);
       }
@@ -878,7 +877,7 @@ public class CalendarPickerView extends ListView {
         && date.before(maxCal.getTime()); // && < maxCal
   }
 
-  private static boolean sameMonth(Calendar cal, com.squareup.timessquare.MonthDescriptor month) {
+  private static boolean sameMonth(Calendar cal, MonthDescriptor month) {
     return (cal.get(MONTH) == month.getMonth() && cal.get(YEAR) == month.getYear());
   }
 
