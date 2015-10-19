@@ -26,6 +26,6 @@ ext.deps = [
     // Test dependencies
     junit      : 'junit:junit:4.10',
     festandroid: 'com.squareup:fest-android:1.0.7',
-    robolectric: 'org.robolectric:robolectric:2.2',
+    robolectric: 'org.robolectric:robolectric:3.0',
     intellijannotations: 'com.intellij:annotations:12.0'
 ]

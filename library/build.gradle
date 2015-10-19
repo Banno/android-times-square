@@ -46,7 +46,7 @@ dependencies {
 uploadArchives {
   repositories {
     mavenDeployer {
-      repository(url: "file:~/.m2")
+      repository(url: String.format("file:%s/.m2/repository", System.getProperty("user.home")))
     }
   }
 }
