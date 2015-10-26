@@ -9,6 +9,8 @@ build
 out
 lib
 
+*target/
+
 local.properties
 release.properties
 
