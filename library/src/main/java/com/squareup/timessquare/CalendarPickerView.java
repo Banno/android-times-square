@@ -199,6 +199,10 @@ public class CalendarPickerView extends ListView {
         new SimpleDateFormat(getContext().getString(R.string.day_name_format), locale);
     fullDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
 
+    monthNameFormat.setTimeZone(timeZone);
+    weekdayNameFormat.setTimeZone(timeZone);
+    fullDateFormat.setTimeZone(timeZone);
+
     this.selectionMode = SelectionMode.SINGLE;
     // Clear out any previously-selected dates/cells.
     selectedCals.clear();
