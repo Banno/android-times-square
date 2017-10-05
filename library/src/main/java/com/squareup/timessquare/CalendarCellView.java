@@ -29,12 +29,16 @@ public class CalendarCellView extends TextView {
   private static final int[] STATE_RANGE_LAST = {
       R.attr.tsquare_state_range_last
   };
+  private static final int[] STATE_SECONDARY_SELECTED = {
+      R.attr.tsquare_state_secondary_selected
+  };
 
   private boolean isSelectable = false;
   private boolean isCurrentMonth = false;
   private boolean isToday = false;
   private boolean isHighlighted = false;
   private RangeState rangeState = RangeState.NONE;
+  private boolean isSecondarySelected = false;
 
   @SuppressWarnings("UnusedDeclaration") //
   public CalendarCellView(Context context, AttributeSet attrs) {
@@ -66,6 +70,11 @@ public class CalendarCellView extends TextView {
     refreshDrawableState();
   }
 
+  public void setSecondarySelected(boolean isSecondarySelected) {
+    this.isSecondarySelected = isSecondarySelected;
+    refreshDrawableState();
+  }
+
   public boolean isCurrentMonth() {
     return isCurrentMonth;
   }
@@ -78,8 +87,12 @@ public class CalendarCellView extends TextView {
     return isSelectable;
   }
 
+  public boolean isSecondarySelected() {
+    return isSecondarySelected;
+  }
+
   @Override protected int[] onCreateDrawableState(int extraSpace) {
-    final int[] drawableState = super.onCreateDrawableState(extraSpace + 5);
+    final int[] drawableState = super.onCreateDrawableState(extraSpace + 6);
 
     if (isSelectable) {
       mergeDrawableStates(drawableState, STATE_SELECTABLE);
@@ -103,6 +116,10 @@ public class CalendarCellView extends TextView {
       mergeDrawableStates(drawableState, STATE_RANGE_MIDDLE);
     } else if (rangeState == RangeState.LAST) {
       mergeDrawableStates(drawableState, STATE_RANGE_LAST);
+    }
+
+    if (isSecondarySelected) {
+      mergeDrawableStates(drawableState, STATE_SECONDARY_SELECTED);
     }
 
     return drawableState;
