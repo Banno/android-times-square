@@ -1,2 +1,2 @@
 library('android-shared')
-publishForkedProject()
+publishProjectAndIncrementVersion('assembleRelease', 'uploadArchives', 'gradle.properties')
