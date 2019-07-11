@@ -23,16 +23,8 @@ public class MonthView extends LinearLayout {
   public static MonthView create(ViewGroup parent, LayoutInflater inflater,
       DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
       int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
-      int headerTextColor, Locale locale) {
-    return create(parent, inflater, weekdayNameFormat, listener, today, dividerColor,
-        dayBackgroundResId, dayTextColorResId, titleTextColor, displayHeader, headerTextColor, null,
-        locale);
-  }
-
-  public static MonthView create(ViewGroup parent, LayoutInflater inflater,
-      DateFormat weekdayNameFormat, Listener listener, Calendar today, int dividerColor,
-      int dayBackgroundResId, int dayTextColorResId, int titleTextColor, boolean displayHeader,
-      int headerTextColor, List<CalendarCellDecorator> decorators, Locale locale) {
+      int headerTextColor, List<CalendarCellDecorator> decorators, Locale locale,
+                                 int dayHeaderTextColor) {
     final MonthView view = (MonthView) inflater.inflate(R.layout.month, parent, false);
     view.setDividerColor(dividerColor);
     view.setDayTextColor(dayTextColorResId);
@@ -53,6 +45,7 @@ public class MonthView extends LinearLayout {
       today.set(Calendar.DAY_OF_WEEK, getDayOfWeek(firstDayOfWeek, offset, view.isRtl));
       final TextView textView = (TextView) headerRow.getChildAt(offset);
       textView.setText(weekdayNameFormat.format(today.getTime()));
+      textView.setTextColor(dayHeaderTextColor);
     }
     today.set(Calendar.DAY_OF_WEEK, originalDayOfWeek);
     view.listener = listener;
