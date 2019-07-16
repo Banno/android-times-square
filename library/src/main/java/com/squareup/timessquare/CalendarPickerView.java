@@ -285,14 +285,18 @@ public class CalendarPickerView extends ListView {
      * visible.
      */
     public FluentInitializer withSelectedDate(Date selectedDates) {
-      return withSelectedDates(Arrays.asList(selectedDates));
+      return withSelectedDates(Arrays.asList(selectedDates), true);
+    }
+
+    public FluentInitializer withSelectedDates(Collection<Date> selectedDates) {
+      return withSelectedDates(selectedDates, true);
     }
 
     /**
      * Set multiple selected dates.  This will throw an {@link IllegalArgumentException} if you
      * pass in multiple dates and haven't already called {@link #inMode(SelectionMode)}.
      */
-    public FluentInitializer withSelectedDates(Collection<Date> selectedDates) {
+    public FluentInitializer withSelectedDates(Collection<Date> selectedDates, boolean shouldScroll) {
       if (selectionMode == SelectionMode.SINGLE && selectedDates.size() > 1) {
         throw new IllegalArgumentException("SINGLE mode can't be used with multiple selectedDates");
       }
@@ -302,10 +306,13 @@ public class CalendarPickerView extends ListView {
       }
       if (selectedDates != null) {
         for (Date date : selectedDates) {
-          selectDate(date);
+          selectDate(date, shouldScroll);
         }
       }
-      scrollToSelectedDates();
+
+      if (shouldScroll) {
+          scrollToSelectedDates();
+      }
 
       validateAndUpdate();
       return this;
@@ -523,19 +530,12 @@ public class CalendarPickerView extends ListView {
     }
   }
 
-  /**
-   * Select a new date.  Respects the {@link SelectionMode} this CalendarPickerView is configured
-   * with: if you are in {@link SelectionMode#SINGLE}, the previously selected date will be
-   * un-selected.  In {@link SelectionMode#MULTIPLE}, the new date will be added to the list of
-   * selected dates.
-   * <p>
-   * If the selection was made (selectable date, in range), the view will scroll to the newly
-   * selected date if it's not already visible.
-   *
-   * @return - whether we were able to set the date
-   */
   public boolean selectDate(Date date) {
-    return selectDate(date, false);
+    return selectDate(date, true);
+  }
+
+  public boolean selectDate(Date date, boolean shouldScroll) {
+    return selectDate(date, shouldScroll, false);
   }
 
   /**
@@ -549,7 +549,7 @@ public class CalendarPickerView extends ListView {
    *
    * @return - whether we were able to set the date
    */
-  public boolean selectDate(Date date, boolean smoothScroll) {
+  public boolean selectDate(Date date, boolean shouldScroll, boolean smoothScroll) {
     validateDate(date);
 
     MonthCellWithMonthIndex monthCellWithMonthIndex = getMonthCellWithIndexByDate(date);
@@ -557,7 +557,7 @@ public class CalendarPickerView extends ListView {
       return false;
     }
     boolean wasSelected = doSelectDate(date, monthCellWithMonthIndex.cell);
-    if (wasSelected) {
+    if (wasSelected && shouldScroll) {
       scrollToSelectedMonth(monthCellWithMonthIndex.monthIndex, smoothScroll);
     }
     return wasSelected;
