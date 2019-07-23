@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -94,6 +96,8 @@ public class MonthView extends LinearLayout {
 
     final int numRows = cells.size();
     grid.setNumRows(numRows);
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d");
     for (int i = 0; i < 6; i++) {
       CalendarRowView weekRow = (CalendarRowView) grid.getChildAt(i + 1);
       weekRow.setListener(listener);
@@ -118,6 +122,9 @@ public class MonthView extends LinearLayout {
           cellView.setRangeState(cell.getRangeState());
           cellView.setHighlighted(cell.isHighlighted());
           cellView.setTag(cell);
+
+          Date date = cell.getDate();
+          cellView.setContentDescription(dateFormat.format(date));
 
           if (null != decorators) {
             for (CalendarCellDecorator decorator : decorators) {
