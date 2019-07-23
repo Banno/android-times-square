@@ -97,7 +97,7 @@ public class MonthView extends LinearLayout {
     final int numRows = cells.size();
     grid.setNumRows(numRows);
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMM d", Locale.getDefault());
     for (int i = 0; i < 6; i++) {
       CalendarRowView weekRow = (CalendarRowView) grid.getChildAt(i + 1);
       weekRow.setListener(listener);
