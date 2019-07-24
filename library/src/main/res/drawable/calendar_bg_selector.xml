@@ -21,6 +21,10 @@
   <item app:tsquare_state_today="true">
     <color android:color="@color/calendar_text_active"/>
   </item>
+  <!--todo remove this?-->
+  <item android:state_focused="true">
+    <color android:color="@android:color/secondary_text_dark"/>
+  </item>
   <item>
     <color android:color="@color/calendar_active_month_bg"/>
   </item>

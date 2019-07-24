@@ -136,6 +136,7 @@ public class CalendarPickerView extends ListView {
     setDividerHeight(0);
     setBackgroundColor(bg);
     setCacheColorHint(bg);
+    setItemsCanFocus(true);
     locale = Locale.getDefault();
     timeZone = TimeZone.getDefault();
     today = createCalendar();
