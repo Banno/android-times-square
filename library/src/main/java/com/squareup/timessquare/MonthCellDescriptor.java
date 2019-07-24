@@ -15,18 +15,28 @@ public class MonthCellDescriptor {
   private final boolean isCurrentMonth;
   private boolean isSelected;
   private final boolean isToday;
+  private final boolean isFirstDayOfWeek;
+  private final boolean isLastDayOfWeek;
+  private final boolean isFirstDayOfMonth;
+  private final boolean isLastDayOfMonth;
   private final boolean isSelectable;
   private boolean isHighlighted;
   private RangeState rangeState;
 
-  public MonthCellDescriptor(Date date, boolean currentMonth, boolean selectable, boolean selected,
-      boolean today, boolean highlighted, int value, RangeState rangeState) {
+  public MonthCellDescriptor(
+       Date date, boolean currentMonth, boolean selectable, boolean selected,
+       boolean today, boolean firstDayOfWeek, boolean lastDayOfWeek, boolean firstDayOfMonth,
+       boolean lastDayOfMonth, boolean highlighted, int value, RangeState rangeState) {
     this.date = date;
     isCurrentMonth = currentMonth;
     isSelectable = selectable;
     isHighlighted = highlighted;
     isSelected = selected;
     isToday = today;
+    isFirstDayOfWeek = firstDayOfWeek;
+    isLastDayOfWeek = lastDayOfWeek;
+    isFirstDayOfMonth = firstDayOfMonth;
+    isLastDayOfMonth = lastDayOfMonth;
     this.value = value;
     this.rangeState = rangeState;
   }
@@ -63,6 +73,22 @@ public class MonthCellDescriptor {
     return isToday;
   }
 
+  public boolean isFirstDayOfWeek() {
+      return isFirstDayOfWeek;
+  }
+
+  public boolean isLastDayOfWeek() {
+      return isLastDayOfWeek;
+  }
+
+  public boolean isFirstDayOfMonth() {
+      return isFirstDayOfMonth;
+  }
+
+  public boolean isLastDayOfMonth() {
+      return isLastDayOfMonth;
+  }
+
   public RangeState getRangeState() {
     return rangeState;
   }
@@ -87,6 +113,14 @@ public class MonthCellDescriptor {
         + isSelected
         + ", isToday="
         + isToday
+        + ", isFirstDayOfWeek="
+        + isFirstDayOfWeek
+        + ", isLastDayOfWeek="
+        + isLastDayOfWeek
+        + ", isFirstDayOfMonth="
+        + isFirstDayOfMonth
+        + ", isLastDayOfMonth="
+        + isLastDayOfMonth
         + ", isSelectable="
         + isSelectable
         + ", isHighlighted="
