@@ -418,8 +418,8 @@ public class CalendarPickerViewTest {
     jumpToCal.setTime(today.getTime());
     jumpToCal.add(DATE, 1);
     MonthCellDescriptor cellToClick =
-        new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, 0,
-            MonthCellDescriptor.RangeState.NONE);
+        new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, true,
+                true, true, true, 0, MonthCellDescriptor.RangeState.NONE);
     view.listener.handleClick(cellToClick);
 
     assertThat(view.selectedCals.get(0).get(DATE)).isEqualTo(jumpToCal.get(DATE));
@@ -624,15 +624,15 @@ public class CalendarPickerViewTest {
     jumpToCal.setTime(today.getTime());
     jumpToCal.set(DAY_OF_MONTH, 17);
     MonthCellDescriptor cellToClick =
-        new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, 0,
-            MonthCellDescriptor.RangeState.NONE);
+        new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, true, true,
+                true, true, 0, MonthCellDescriptor.RangeState.NONE);
     view.listener.handleClick(cellToClick);
 
     assertThat(view.selectedCals.get(0).get(DATE)).isEqualTo(17);
 
     jumpToCal.set(DAY_OF_MONTH, 18);
-    cellToClick = new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, 0,
-        MonthCellDescriptor.RangeState.NONE);
+    cellToClick = new MonthCellDescriptor(jumpToCal.getTime(), true, true, true, true, true, true,
+            true, true, true, 0, MonthCellDescriptor.RangeState.NONE);
     view.listener.handleClick(cellToClick);
 
     assertThat(view.selectedCals.get(0).get(DATE)).isEqualTo(17);

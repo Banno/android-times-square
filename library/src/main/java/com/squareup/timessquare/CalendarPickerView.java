@@ -816,6 +816,17 @@ public class CalendarPickerView extends ListView {
         boolean isHighlighted = containsDate(highlightedCals, cal);
         int value = cal.get(DAY_OF_MONTH);
 
+        int dayOfWeek = cal.get(DAY_OF_WEEK);
+        boolean isFirstDayOfWeek = dayOfWeek == 1;
+        boolean isLastDayOfWeek = dayOfWeek == 7;
+        boolean isFirstDayOfMonth = value == 1;
+
+        Calendar tomorrow = createCalendar();
+        tomorrow.setTime(date);
+        tomorrow.add(DATE, 1);
+
+        boolean isLastDayOfMonth = cal.get(MONTH) != tomorrow.get(MONTH);
+
         MonthCellDescriptor.RangeState rangeState = MonthCellDescriptor.RangeState.NONE;
         if (selectedCals.size() > 1) {
           if (sameDate(minSelectedCal, cal)) {
@@ -828,8 +839,12 @@ public class CalendarPickerView extends ListView {
         }
 
         weekCells.add(
-            new MonthCellDescriptor(date, isCurrentMonth, isSelectable, isSelected, isToday,
-                isHighlighted, value, rangeState));
+            new MonthCellDescriptor(
+                    date, isCurrentMonth, isSelectable, isSelected, isToday, isFirstDayOfWeek,
+                    isLastDayOfWeek, isFirstDayOfMonth, isLastDayOfMonth, isHighlighted, value,
+                    rangeState
+            )
+        );
         cal.add(DATE, 1);
       }
     }
