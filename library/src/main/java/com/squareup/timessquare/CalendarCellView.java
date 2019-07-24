@@ -83,6 +83,13 @@ public class CalendarCellView extends TextView {
 
   public void setSelectable(boolean isSelectable) {
     this.isSelectable = isSelectable;
+
+    if (isSelectable) {
+      setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+    } else {
+      setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
+    }
+
     refreshDrawableState();
   }
 
