@@ -17,9 +17,9 @@ allprojects {
 
 ext {
   minSdkVersion = 21
-  targetSdkVersion = 23
-  compileSdkVersion = 27
-  buildToolsVersion = '27.0.3'
+  targetSdkVersion = 28
+  compileSdkVersion = 28
+  buildToolsVersion = '28.0.3'
   sourceCompatibilityVersion = JavaVersion.VERSION_1_7
   targetCompatibilityVersion = JavaVersion.VERSION_1_7
 }
@@ -27,6 +27,7 @@ ext {
 ext.deps = [
     // Test dependencies
     junit      : 'junit:junit:4.10',
+    appcompatresources: 'androidx.appcompat:appcompat-resources:1.1.0-rc01',
     festandroid: 'com.squareup:fest-android:1.0.7',
     robolectric: 'org.robolectric:robolectric:3.0',
     intellijannotations: 'com.intellij:annotations:12.0'
